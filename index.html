@@ -139,6 +139,16 @@
   }
   .knopf.aus:hover{background:transparent}
 
+  /* ---------- Hinweis zu macOS ---------- */
+  .mac-notiz{
+    margin-top:26px;padding:22px 24px;border-left:3px solid var(--gold);
+    background:var(--flaeche-2);border-radius:0 4px 4px 0;max-width:72ch;
+  }
+  .mac-notiz h3{font-size:1.02rem;font-weight:500;letter-spacing:.04em;margin-bottom:10px}
+  .mac-notiz p{margin:0 0 10px;font-size:.94rem;color:var(--gedaempft)}
+  .mac-notiz p:last-child{margin-bottom:0}
+  .mac-notiz a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+
   /* ---------- Änderungen ---------- */
   .neu{list-style:none;padding:0;margin:0;display:grid;gap:12px;max-width:70ch}
   .neu li{display:flex;gap:13px;align-items:baseline}
@@ -207,6 +217,18 @@
 
     <div class="versionen" role="tablist" aria-label="Verfügbare Versionen" id="versionsleiste"></div>
     <div class="karten" id="kartenbereich"></div>
+
+    <div class="mac-notiz">
+      <h3>Warum es Quidditch nicht f&uuml;r macOS gibt</h3>
+      <p>Das Spiel entsteht auf einem Linux&#8209;Rechner. Unreal Engine kann von dort
+        f&uuml;r Windows und Linux bauen, f&uuml;r macOS jedoch nicht: Daf&uuml;r braucht es Apples
+        Xcode, und das l&auml;uft ausschliesslich auf einem Mac. Es ist keine Einstellung,
+        die sich umlegen liesse.</p>
+      <p>Wenn du einen Mac hast und Lust darauf: Das Projekt liegt offen bei
+        <a href="https://github.com/wiederkehroskar-del/quidditch">GitHub</a>. Mit Xcode und
+        Unreal&nbsp;5.8 sind es dieselben Schritte wie unter Windows &ndash; und dann steht hier
+        auch ein Mac&#8209;Download.</p>
+    </div>
   </section>
 
   <section>
@@ -284,20 +306,32 @@
    ===================================================================== */
 const VERSIONEN = [
   {
+    nr: "0.9.1",
+    datum: "2026-09-07",
+    neu: [
+      "Behoben: Im gepackten Spiel fehlten saemtliche 3D-Modelle. Winkelgasse, Schlosskulisse, Ruestungen, Haustische, Besen und Zauber waren unsichtbar.",
+      "Die Winkelgasse hat wieder ihre Haeuser, das Kopfsteinpflaster, Marktstaende und Passanten.",
+      "Hinter dem Stadion steht wieder die Kulisse.",
+      "Neu: Ein Skript traegt das Spiel ins Anwendungsmenue ein - danach laesst es sich wie jedes andere Programm ueber die Suche starten."
+    ],
+    dateien: {
+      windows: { url:null, datei:"Quidditch-0.9.1-Windows.zip", groesse:"noch offen", status:"In Arbeit" },
+      macos:   { url:null, datei:"Quidditch-0.9.1-macOS.dmg",   groesse:"\u2014",     status:"Braucht einen Mac" },
+      linux:   { url:"https://github.com/wiederkehroskar-del/quidditch/releases/download/v0.9.1/Quidditch-0.9.1-Linux.tar.gz",
+                 datei:"Quidditch-0.9.1-Linux.tar.gz", groesse:"351 MB", status:"" }
+    }
+  },
+  {
     nr: "0.9.0",
     datum: "2026-09-07",
     neu: [
-      "Flugmodell mit eigenem Besen-Pawn: Tempo, Schub und Trägheit sind pro Besenmodell einstellbar.",
-      "Vollständiger Match-Ablauf mit Quaffel, Klatschern, Schnatz, Torringen und Kommentator.",
-      "Winkelgasse mit Besenladen, Kopfsteinpflaster, Passanten und Zaubersprüchen.",
-      "Hogwarts-Schloss begehbar, dazu als Kulisse am Spielfeldrand.",
-      "Filmlook in drei Stimmungen für Match, Gasse und Schloss."
+      "Zurueckgezogen. In dieser Fassung fehlten im fertigen Spiel alle 3D-Modelle - die Welten waren nur aus Klotzchen gebaut.",
+      "Wer sie geladen hat, nimmt bitte 0.9.1."
     ],
     dateien: {
-      windows: { url:null, datei:"Quidditch-0.9.0-Windows.zip",   groesse:"ca. 400 MB", status:"Wird gerade gebaut" },
-      macos:   { url:null, datei:"Quidditch-0.9.0-macOS.dmg",     groesse:"—",       status:"Braucht einen Mac" },
-      linux:   { url:"https://github.com/wiederkehroskar-del/quidditch/releases/download/v0.9.0/Quidditch-0.9.0-Linux.tar.gz",
-                 datei:"Quidditch-0.9.0-Linux.tar.gz", groesse:"346 MB", status:"" }
+      windows: { url:null, datei:"\u2014", groesse:"\u2014", status:"Nie erschienen" },
+      macos:   { url:null, datei:"\u2014", groesse:"\u2014", status:"Nie erschienen" },
+      linux:   { url:null, datei:"Quidditch-0.9.0-Linux.tar.gz", groesse:"346 MB", status:"Zurueckgezogen" }
     }
   }
 ];

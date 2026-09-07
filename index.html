@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Quidditch - Besenflug-Spiel fuer Windows, macOS und Linux. Alle Versionen zum Herunterladen.">
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Quidditch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+  /* ---------- Farben: helles Thema als Grundlage ---------- */
+  :root{
+    --grund:#F0ECE2;
+    --flaeche:#FBF8F1;
+    --flaeche-2:#F5F1E7;
+    --schrift:#1C2032;
+    --gedaempft:#5E6278;
+    --linie:#DBD4C4;
+    --gold:#8A6D1C;
+    --gold-hell:#B8942F;
+    --gold-flaeche:#F6EDD5;
+    --nacht:#0B0E1A;
+    --nacht-schrift:#E7E4D9;
+    --nacht-gedaempft:#8C93AC;
+    --schatten:0 1px 2px rgba(28,32,50,.06), 0 8px 24px -12px rgba(28,32,50,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --grund:#0E1220;
+      --flaeche:#171C2E;
+      --flaeche-2:#1E2438;
+      --schrift:#E7E4D9;
+      --gedaempft:#9BA0B5;
+      --linie:#2B3249;
+      --gold:#E0BC63;
+      --gold-hell:#F0D48A;
+      --gold-flaeche:#241F14;
+      --schatten:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --grund:#0E1220;
+    --flaeche:#171C2E;
+    --flaeche-2:#1E2438;
+    --schrift:#E7E4D9;
+    --gedaempft:#9BA0B5;
+    --linie:#2B3249;
+    --gold:#E0BC63;
+    --gold-hell:#F0D48A;
+    --gold-flaeche:#241F14;
+    --schatten:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--grund);
+    color:var(--schrift);
+    font-family:Spectral,Georgia,"Times New Roman",serif;
+    font-size:17px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .bahn{max-width:1080px;margin:0 auto;padding:0 28px}
+  h1,h2,h3{font-family:Cinzel,"Palatino Linotype",Georgia,serif;text-wrap:balance;margin:0}
+  a{color:inherit}
+
+  /* ---------- Nachthimmel-Kopf ---------- */
+  .kopf{position:relative;background:var(--nacht);color:var(--nacht-schrift);overflow:hidden;border-bottom:1px solid #1C2338}
+  #himmel{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .kopf-inhalt{position:relative;padding:64px 0 56px;display:flex;flex-direction:column;gap:18px}
+  .marke{display:flex;align-items:center;gap:16px}
+  .schnatz{flex:none;filter:drop-shadow(0 0 10px rgba(224,188,99,.45))}
+  @media (prefers-reduced-motion: no-preference){
+    .schnatz{animation:schweben 6s ease-in-out infinite}
+  }
+  @keyframes schweben{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  .kopf h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:700;letter-spacing:.13em;line-height:1;color:#F2E7C8}
+  .unterzeile{font-size:1.12rem;color:var(--nacht-gedaempft);max-width:56ch;margin:0}
+  .kopf-marken{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .marker{
+    font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.1em;
+    text-transform:uppercase;padding:5px 11px;border:1px solid #2E3855;border-radius:2px;
+    color:#B9BFD4;background:rgba(255,255,255,.03);
+  }
+  .marker.gold{color:#E9CE86;border-color:#5A4A22;background:rgba(224,188,99,.07)}
+
+  /* ---------- Abschnitte ---------- */
+  section{padding:56px 0}
+  section + section{border-top:1px solid var(--linie)}
+  .augenbraue{
+    font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--gold);margin:0 0 10px
+  }
+  section h2{font-size:1.6rem;font-weight:500;letter-spacing:.05em;margin-bottom:22px}
+  .hinweis{color:var(--gedaempft);max-width:62ch;margin:0 0 26px}
+
+  /* ---------- Versionsleiste ---------- */
+  .versionen{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+  .vchip{
+    font-family:"JetBrains Mono",ui-monospace,monospace;
+    background:var(--flaeche);border:1px solid var(--linie);border-radius:3px;
+    padding:11px 16px;cursor:pointer;color:var(--schrift);text-align:left;
+    display:flex;flex-direction:column;gap:3px;transition:border-color .16s,background .16s;
+  }
+  .vchip:hover{border-color:var(--gold-hell)}
+  .vchip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .vchip .nr{font-size:.98rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .vchip .dt{font-size:.7rem;color:var(--gedaempft);letter-spacing:.06em}
+  .vchip[aria-selected="true"]{background:var(--gold-flaeche);border-color:var(--gold)}
+  .vchip[aria-selected="true"] .nr{color:var(--gold)}
+
+  /* ---------- Download-Karten ---------- */
+  .karten{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .karte{
+    background:var(--flaeche);border:1px solid var(--linie);border-radius:4px;
+    padding:24px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--schatten);
+  }
+  .karte-kopf{display:flex;align-items:center;gap:12px}
+  .karte-kopf svg{flex:none;color:var(--gedaempft)}
+  .karte h3{font-size:1.16rem;font-weight:500;letter-spacing:.04em}
+  .zeilen{display:flex;flex-direction:column;gap:7px;font-size:.83rem;margin-top:auto}
+  .zeile{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .zeile dt{color:var(--gedaempft)}
+  .zeile dd{margin:0;font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;
+    text-align:right;overflow-wrap:anywhere}
+  .knopf{
+    display:block;text-align:center;text-decoration:none;font-family:Cinzel,Georgia,serif;
+    letter-spacing:.09em;font-size:.92rem;padding:13px 18px;border-radius:3px;
+    background:var(--gold);color:var(--grund);border:1px solid var(--gold);font-weight:700;
+    transition:background .16s,transform .1s;
+  }
+  .knopf:hover{background:var(--gold-hell);border-color:var(--gold-hell)}
+  .knopf:active{transform:translateY(1px)}
+  .knopf:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .knopf.aus{
+    background:transparent;color:var(--gedaempft);border:1px dashed var(--linie);
+    cursor:not-allowed;font-weight:500;
+  }
+  .knopf.aus:hover{background:transparent}
+
+  /* ---------- Änderungen ---------- */
+  .neu{list-style:none;padding:0;margin:0;display:grid;gap:12px;max-width:70ch}
+  .neu li{display:flex;gap:13px;align-items:baseline}
+  .neu li::before{
+    content:"";flex:none;width:6px;height:6px;border-radius:50%;
+    background:var(--gold);transform:translateY(-2px)
+  }
+
+  /* ---------- Steuerung ---------- */
+  .steuerung{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px}
+  .stgruppe h3{font-size:1.02rem;font-weight:500;letter-spacing:.05em;margin-bottom:14px;color:var(--gold)}
+  .stliste{display:grid;gap:9px;margin:0}
+  .streihe{display:flex;justify-content:space-between;gap:16px;align-items:center;
+    padding-bottom:9px;border-bottom:1px solid var(--linie)}
+  .streihe:last-child{border-bottom:none}
+  .streihe span{font-size:.95rem}
+  kbd{
+    font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.76rem;
+    background:var(--flaeche-2);border:1px solid var(--linie);border-bottom-width:2px;
+    border-radius:3px;padding:3px 7px;color:var(--schrift);white-space:nowrap;
+  }
+
+  /* ---------- Anforderungen ---------- */
+  .anf-huelle{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--linie)}
+  th{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.7rem;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--gedaempft);font-weight:400}
+  td:first-child{color:var(--gedaempft)}
+  td{font-variant-numeric:tabular-nums}
+
+  footer{padding:38px 0 56px;color:var(--gedaempft);font-size:.85rem;border-top:1px solid var(--linie)}
+  footer p{margin:0 0 7px;max-width:64ch}
+</style>
+</head>
+<body>
+<header class="kopf">
+  <canvas id="himmel" aria-hidden="true"></canvas>
+  <div class="bahn kopf-inhalt">
+    <div class="marke">
+      <svg class="schnatz" width="46" height="46" viewBox="0 0 46 46" aria-hidden="true">
+        <path d="M23 13 C15 5, 3 7, 4 16 C5 23, 15 22, 23 23" fill="none" stroke="#D8B45E" stroke-width="1.7" opacity="1"/>
+        <path d="M23 13 C31 5, 43 7, 42 16 C41 23, 31 22, 23 23" fill="none" stroke="#D8B45E" stroke-width="1.7" opacity="1"/>
+        <circle cx="23" cy="26" r="8" fill="#E0BC63"/>
+        <circle cx="20.4" cy="23.4" r="2.6" fill="#F6E2AE"/>
+      </svg>
+      <h1>Quidditch</h1>
+    </div>
+    <p class="unterzeile">Ein Besenflug-Spiel: Match auf dem Feld, Einkauf in der Winkelgasse,
+      Rundgang durchs Schloss. Gebaut mit Unreal Engine 5.8.</p>
+    <div class="kopf-marken">
+      <span class="marker gold" id="kopf-version">Version —</span>
+      <span class="marker">Unreal Engine 5.8.2</span>
+      <span class="marker">Windows · macOS · Linux</span>
+    </div>
+  </div>
+</header>
+
+<main class="bahn">
+
+  <section>
+    <p class="augenbraue">Herunterladen</p>
+    <h2>Version wählen</h2>
+    <p class="hinweis">Die Versionen stehen in der Reihenfolge ihrer Veröffentlichung, die neuste zuerst.
+      Ältere bleiben erreichbar, falls eine neue Fassung bei dir Probleme macht.</p>
+
+    <div class="versionen" role="tablist" aria-label="Verfügbare Versionen" id="versionsleiste"></div>
+    <div class="karten" id="kartenbereich"></div>
+  </section>
+
+  <section>
+    <p class="augenbraue">Änderungen</p>
+    <h2 id="neu-titel">Was in dieser Version neu ist</h2>
+    <ul class="neu" id="neuliste"></ul>
+  </section>
+
+  <section>
+    <p class="augenbraue">Tastenbelegung</p>
+    <h2>Steuerung</h2>
+    <div class="steuerung">
+      <div class="stgruppe">
+        <h3>Auf dem Besen</h3>
+        <div class="stliste">
+          <div class="streihe"><span>Tempo halten und drosseln</span><span><kbd>W</kbd> <kbd>S</kbd></span></div>
+          <div class="streihe"><span>Lenken</span><span><kbd>Maus</kbd></span></div>
+          <div class="streihe"><span>Schub</span><span><kbd>Shift</kbd></span></div>
+          <div class="streihe"><span>Greifen</span><span><kbd>Leertaste</kbd></span></div>
+          <div class="streihe"><span>Zur Winkelgasse</span><span><kbd>G</kbd></span></div>
+          <div class="streihe"><span>Zum Schloss</span><span><kbd>C</kbd></span></div>
+          <div class="streihe"><span>Nach Hogsmeade</span><span><kbd>H</kbd></span></div>
+          <div class="streihe"><span>In den Besenladen</span><span><kbd>B</kbd></span></div>
+        </div>
+      </div>
+      <div class="stgruppe">
+        <h3>Zu Fuß</h3>
+        <div class="stliste">
+          <div class="streihe"><span>Gehen</span><span><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></span></div>
+          <div class="streihe"><span>Umsehen</span><span><kbd>Maus</kbd></span></div>
+          <div class="streihe"><span>Benutzen</span><span><kbd>E</kbd></span></div>
+        </div>
+        <h3 style="margin-top:26px">Im Match</h3>
+        <div class="stliste">
+          <div class="streihe"><span>Ein Tor durch einen Ring</span><span><kbd>10 Punkte</kbd></span></div>
+          <div class="streihe"><span>Der Schnatz beendet das Spiel</span><span><kbd>150 Punkte</kbd></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="augenbraue">Voraussetzungen</p>
+    <h2>Was dein Rechner können muss</h2>
+    <div class="anf-huelle">
+      <table>
+        <thead>
+          <tr><th></th><th>Mindestens</th><th>Empfohlen</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Prozessor</td><td>4 Kerne, 2,5 GHz</td><td>6 Kerne, 3,0 GHz</td></tr>
+          <tr><td>Arbeitsspeicher</td><td>8 GB</td><td>16 GB</td></tr>
+          <tr><td>Grafikkarte</td><td>4 GB, DirectX 12 / Vulkan</td><td>8 GB, RTX 2060 aufwärts</td></tr>
+          <tr><td>Festplatte</td><td>6 GB frei</td><td>10 GB frei, SSD</td></tr>
+          <tr><td>System</td><td>Windows 10 · macOS 13 · Linux mit Vulkan</td><td>Windows 11 · macOS 14 · aktuelles Linux</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Quidditch ist ein privates Fanprojekt ohne kommerzielle Absicht und steht in keiner
+      Verbindung zu den Rechteinhabern der Buch- und Filmreihe.</p>
+    <p id="fussstand"></p>
+  </footer>
+</main>
+
+<script>
+/* =====================================================================
+   HIER VERSIONEN EINTRAGEN
+   ---------------------------------------------------------------------
+   Neue Version: einfach einen neuen Block GANZ OBEN in die Liste setzen.
+   url: null  ->  der Knopf ist grau und zeigt den Text aus "status".
+   url: "https://..."  ->  der Knopf wird golden und laedt herunter.
+   ===================================================================== */
+const VERSIONEN = [
+  {
+    nr: "0.9.0",
+    datum: "2026-09-07",
+    neu: [
+      "Flugmodell mit eigenem Besen-Pawn: Tempo, Schub und Trägheit sind pro Besenmodell einstellbar.",
+      "Vollständiger Match-Ablauf mit Quaffel, Klatschern, Schnatz, Torringen und Kommentator.",
+      "Winkelgasse mit Besenladen, Kopfsteinpflaster, Passanten und Zaubersprüchen.",
+      "Hogwarts-Schloss begehbar, dazu als Kulisse am Spielfeldrand.",
+      "Filmlook in drei Stimmungen für Match, Gasse und Schloss."
+    ],
+    dateien: {
+      windows: { url:null, datei:"Quidditch-0.9.0-Windows.zip",   groesse:"~2,4 GB", status:"Wird gerade gebaut" },
+      macos:   { url:null, datei:"Quidditch-0.9.0-macOS.dmg",     groesse:"—",       status:"Noch nicht geplant" },
+      linux:   { url:null, datei:"Quidditch-0.9.0-Linux.zip",     groesse:"~2,2 GB", status:"In Vorbereitung" }
+    }
+  }
+];
+
+const PLATTFORMEN = [
+  { schluessel:"windows", name:"Windows", zusatz:"64-Bit, Windows 10 oder neuer",
+    symbol:'<svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="M0 3.1 8.9 1.9V10.4H0zM10 1.7 22 0v10.4H10zM0 11.6h8.9v8.5L0 18.9zM10 11.6h12V22l-12-1.7z"/></svg>' },
+  { schluessel:"macos", name:"macOS", zusatz:"Apple Silicon und Intel",
+    symbol:'<svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="M15.2 11.6c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.7.8-3.3.8-.7 0-1.7-.8-2.8-.8-1.5 0-2.8.8-3.6 2.1-1.5 2.6-.4 6.5 1.1 8.6.7 1 1.6 2.2 2.7 2.2 1.1 0 1.5-.7 2.8-.7 1.3 0 1.6.7 2.8.7 1.2 0 1.9-1 2.6-2.1.8-1.2 1.2-2.4 1.2-2.5-.1 0-2.2-.9-2.2-3.2zM13 4.9c.6-.7 1-1.7.9-2.7-.9 0-2 .6-2.6 1.3-.6.6-1.1 1.7-.9 2.6 1 .1 2-.5 2.6-1.2z"/></svg>' },
+  { schluessel:"linux", name:"Linux", zusatz:"Vulkan-fähige Treiber nötig",
+    symbol:'<svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="M11 1c-2.3 0-3.6 1.8-3.6 4.2 0 1.4.2 2.2-.3 3.2-.7 1.4-2.6 3.6-3.2 5.9-.4 1.5.2 2.3 1.1 2.1.3.9 1 1.7 2.1 2.2 2.2 1 5.4 1 7.6 0 1.1-.5 1.8-1.3 2.1-2.2.9.2 1.5-.6 1.1-2.1-.6-2.3-2.5-4.5-3.2-5.9-.5-1-.3-1.8-.3-3.2C14.6 2.8 13.3 1 11 1zm-1.6 3.3c.5 0 .9.5.9 1.2s-.4 1.2-.9 1.2-.9-.5-.9-1.2.4-1.2.9-1.2zm3.2 0c.5 0 .9.5.9 1.2s-.4 1.2-.9 1.2-.9-.5-.9-1.2.4-1.2.9-1.2zM11 7.8c1 0 2.3.6 2.3 1.1 0 .4-1.3 1.3-2.3 1.3s-2.3-.9-2.3-1.3c0-.5 1.3-1.1 2.3-1.1z"/></svg>' }
+];
+
+const leiste = document.getElementById("versionsleiste");
+const karten = document.getElementById("kartenbereich");
+const neuliste = document.getElementById("neuliste");
+const neuTitel = document.getElementById("neu-titel");
+const kopfVersion = document.getElementById("kopf-version");
+const fussstand = document.getElementById("fussstand");
+
+function datumLang(iso){
+  const m = ["Januar","Februar","März","April","Mai","Juni","Juli",
+             "August","September","Oktober","November","Dezember"];
+  const d = new Date(iso + "T12:00:00");
+  return d.getDate() + ". " + m[d.getMonth()] + " " + d.getFullYear();
+}
+
+function zeichneLeiste(aktiv){
+  leiste.innerHTML = "";
+  VERSIONEN.forEach((v, i) => {
+    const b = document.createElement("button");
+    b.className = "vchip";
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", i === aktiv ? "true" : "false");
+    b.innerHTML = '<span class="nr">' + v.nr + '</span><span class="dt">' +
+                  (i === 0 ? "neuste · " : "") + datumLang(v.datum) + '</span>';
+    b.addEventListener("click", () => zeige(i));
+    leiste.appendChild(b);
+  });
+}
+
+function zeichneKarten(v){
+  karten.innerHTML = "";
+  PLATTFORMEN.forEach(p => {
+    const d = v.dateien[p.schluessel] || {};
+    const bereit = Boolean(d.url);
+    const k = document.createElement("div");
+    k.className = "karte";
+    k.innerHTML =
+      '<div class="karte-kopf">' + p.symbol + '<h3>' + p.name + '</h3></div>' +
+      '<p style="margin:0;font-size:.88rem;color:var(--gedaempft)">' + p.zusatz + '</p>' +
+      '<dl class="zeilen">' +
+        '<div class="zeile"><dt>Datei</dt><dd>' + (d.datei || "—") + '</dd></div>' +
+        '<div class="zeile"><dt>Größe</dt><dd>' + (d.groesse || "—") + '</dd></div>' +
+        '<div class="zeile"><dt>Stand</dt><dd>' + (bereit ? "Bereit" : (d.status || "—")) + '</dd></div>' +
+      '</dl>' +
+      (bereit
+        ? '<a class="knopf" href="' + d.url + '" target="_blank" rel="noopener">Herunterladen</a>'
+        : '<span class="knopf aus" aria-disabled="true">' + (d.status || "Noch nicht verfügbar") + '</span>');
+    karten.appendChild(k);
+  });
+}
+
+function zeige(i){
+  const v = VERSIONEN[i];
+  zeichneLeiste(i);
+  zeichneKarten(v);
+  neuTitel.textContent = "Neu in Version " + v.nr;
+  neuliste.innerHTML = "";
+  v.neu.forEach(t => {
+    const li = document.createElement("li");
+    li.textContent = t;
+    neuliste.appendChild(li);
+  });
+  kopfVersion.textContent = "Version " + v.nr;
+  fussstand.textContent = "Stand dieser Seite: Version " + v.nr + " vom " + datumLang(v.datum) + ".";
+}
+
+zeige(0);
+
+/* ---------- Sternenhimmel im Kopf ---------- */
+(function(){
+  const c = document.getElementById("himmel");
+  if(!c) return;
+  const ctx = c.getContext("2d");
+  const ruhig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let sterne = [], b = 0, h = 0;
+
+  function neuAufbauen(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    b = c.clientWidth; h = c.clientHeight;
+    c.width = b * dpr; c.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const anzahl = Math.round(b * h / 7000);
+    sterne = Array.from({length: anzahl}, () => ({
+      x: Math.random() * b,
+      y: Math.random() * h,
+      r: Math.random() * 1.15 + 0.35,
+      p: Math.random() * Math.PI * 2,
+      gold: Math.random() < 0.16
+    }));
+    male(0);
+  }
+
+  function male(t){
+    ctx.clearRect(0, 0, b, h);
+    for(const s of sterne){
+      const flimmern = ruhig ? 0.62 : 0.45 + 0.35 * Math.sin(t / 1400 + s.p);
+      ctx.globalAlpha = flimmern;
+      ctx.fillStyle = s.gold ? "#E0BC63" : "#C6CEE6";
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function schleife(t){ male(t); requestAnimationFrame(schleife); }
+
+  neuAufbauen();
+  if(!ruhig) requestAnimationFrame(schleife);
+  let z; window.addEventListener("resize", () => { clearTimeout(z); z = setTimeout(neuAufbauen, 160); });
+})();
+</script>
+</body>
+</html>
